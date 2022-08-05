@@ -1,0 +1,98 @@
+DAY-10::
+
+#Print all permutations of a string/array:
+
+class Solution {
+public:
+    
+    void func(vector<int> &nums, int start, int end, vector<vector<int>> &ans) {
+        if(start>=end){
+            ans.push_back(nums);
+            return;
+        }
+        for(int i=start;i<=end;i++) {
+            swap(nums[start],nums[i]);
+            func(nums,start+1,end,ans);
+            swap(nums[start],nums[i]);
+        }
+    }
+    
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> ans;
+        func(nums,0,nums.size()-1,ans);
+        return ans;
+    }
+};
+
+#N queens Problem:
+
+#Sudoku Solver:
+
+class Solution {
+public:
+    
+    bool check(vector<vector<int>> &A, int x, int y, int k) {
+        for(int i=0;i<9;i++) if(A[i][y]==k) return false;
+        for(int i=0;i<9;i++) if(A[x][i]==k) return false;
+        
+        x = x-x%3;
+        y = y-y%3;
+        
+        for(int i=x;i<=x+2;i++) {
+            for(int j=y;j<=y+2;j++) {
+                if(A[i][j]==k) return false;
+            }
+        }
+        return true;
+    }
+    
+    void solve(vector<vector<int>> &A,vector<vector<char>>& board) {
+        int x=-1, y=-1;
+        for(int i=0;i<9;i++) {
+            for(int j=0;j<9;j++) {
+                if(A[i][j]==0) {
+                    x=i;
+                    y=j;
+                    break;
+                }
+            }
+        }
+        if(x==-1 && y==-1){
+            for(int i=0;i<9;i++) {
+                for(int j=0;j<9;j++) {
+                    board[i][j]=A[i][j]+'0';
+                }
+            }
+            return;
+        }
+        for(int i=1;i<=9;i++) {
+            if(check(A,x,y,i)) {
+                A[x][y]=i;
+                solve(A,board);
+                A[x][y]=0;
+            }
+        }
+    }
+    
+    void solveSudoku(vector<vector<char>>& board) {
+        vector<vector<int>> A(9,vector<int>(9,0));
+        for(int i=0;i<9;i++) {
+            for(int j=0;j<9;j++) {
+                if(board[i][j]!='.')
+                A[i][j]=board[i][j]-'0';
+                else A[i][j]=0;
+            }
+        }
+        
+        solve(A,board);
+        
+        
+        
+    }
+};
+
+#M coloring Problem:
+
+#Rat in a Maze:
+
+#Word Break (print all ways)

@@ -1,0 +1,158 @@
+DAY-8::
+
+#N meetings in one room:
+
+
+struct data {
+    int start,end,pos;
+};
+
+bool cmp(data a, data b) {
+    if(a.end < b.end) return true;
+    else if(a.end > b.end) return false;
+    else if(a.pos < b.pos) return true;
+    else return false;
+}
+
+vector<int> maximumMeetings(vector<int> &start, vector<int> &end) {
+    // Write your code here.
+    int n=start.size();
+    struct data temp[n];
+    for(int i=0;i<n;i++) {
+        temp[i].start=start[i];
+        temp[i].end=end[i];
+        temp[i].pos=i+1;
+    }
+    sort(temp,temp+n,cmp);
+    
+    vector<int> ans;
+    ans.push_back(temp[0].pos);
+    int endtime=temp[0].end;
+    
+    for(int i=1;i<n;i++) {
+        if(temp[i].start > endtime) {
+            ans.push_back(temp[i].pos);
+            endtime = temp[i].end;
+        }
+    }
+    return ans;
+}
+
+#Minimum number of platforms required for a railway:
+
+int calculateMinPatforms(int at[], int dt[], int n) {
+    // Write your code here.
+    sort(at,at+n);
+    sort(dt,dt+n);
+    int ans=0,a=0,b=0,t=0;
+    while(a<n && b<n) {
+        if(at[a] <= dt[b]) {
+            t++;
+            ans=max(ans,t);
+            a++;
+        } else {
+            t--;
+            b++;
+        }
+    }
+    while(a<n) {
+        t++;
+        ans=max(ans,t);
+        a++;
+    }
+    return ans;
+}
+
+#Job sequencing Problem:
+
+bool cmp(vector<int> a, vector<int> b) {
+    if(a[1] > b[1]) return true;
+    else if(a[1] < b[1]) return false;
+}
+
+int jobScheduling(vector<vector<int>> &jobs)
+{
+    sort(jobs.begin(),jobs.end(),cmp);  
+    int n=0;
+    for(int i=0;i<jobs.size();i++) n=max(n,jobs[i][0]);
+    vector<int> v(n,-1);
+    for(int i=0;i<jobs.size();i++) {
+        for(int j=jobs[i][0]-1;j>=0;j--) {
+            if(v[j]==-1){
+                v[j]=jobs[i][1];
+                break;
+            }
+        }
+    }
+    int ans=0;
+    for(int i=0;i<n;i++) if(v[i]!=-1)ans+=v[i];
+    return ans;
+}
+
+#Fractional Knapsack Problem
+
+include <bits/stdc++.h>
+
+bool cmp(pair<int,int> a, pair<int,int> b) {
+    double x=(double)a.first/(double)a.second, y=(double)b.first/(double)b.second;
+    if(x <= y) return true;
+    else return false;
+}
+
+double maximumValue (vector<pair<int, int>>& items, int n, int w)
+{
+    sort(items.begin(),items.end(),cmp);
+    double ans=0;
+    for(int i=0;i<n;i++) {
+        if(w<=0) break;
+        if(w>=items[i].first) {
+            ans+=items[i].second;
+            w-=items[i].first;
+        } else {
+            double k = (double)w/(double)(items[i].first);
+            ans+=((double)items[i].second)*(k);
+            w=0;
+        }
+    }
+    return ans;
+}
+
+#Greedy algorithm to find minimum number of coins:
+
+int findMinimumCoins(int amount) 
+{
+    int A[9] = {1,2,5,10,20,50,100,500,1000};
+    int ans=0;
+    for(int i=8;i>=0;i--) {
+        int k =amount/A[i];
+        amount-=k*A[i];
+        ans+=k;
+    }
+    return ans;
+}
+
+#Activity Selection (it is the same as N meeting in one room)
+
+bool cmp(pair<int,int> a, pair<int,int> b) {
+    if(a.second < b.second) return true;
+    else if(a.second > b.second) return false;
+    else if(a.first < b.first) return true;
+    else return true;
+}
+
+int maximumActivities(vector<int> &start, vector<int> &finish) {
+    // Write your code here.
+    vector<pair<int,int>> p;
+    for(int i=0;i<start.size();i++) {
+        p.push_back({start[i],finish[i]});
+    }
+    sort(p.begin(),p.end(),cmp);
+    int ans=1,time=p[0].second;
+    for(int i=1;i<start.size();i++) {
+        if(p[i].first >= time) {
+            ans++;
+            time=p[i].second;
+        }
+    }
+    return ans;
+}

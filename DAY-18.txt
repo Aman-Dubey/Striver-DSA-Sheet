@@ -1,0 +1,197 @@
+DAY::18
+
+#Level order Traversal / Level order traversal in spiral form:
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        queue<TreeNode*> q;
+        vector<vector<int>> ans;
+        vector<int> v;
+        if(!root) return ans;
+        q.push(root);
+        q.push(NULL);
+        while(q.size()) {
+            TreeNode *temp=q.front(); q.pop();
+            if(temp!=NULL) v.push_back(temp->val);
+            if(temp==NULL) {
+                ans.push_back(v);
+                v.clear();
+                if(q.size()==0) break;
+                q.push(NULL);
+                
+            } else {
+                if(temp->left) q.push(temp->left);
+                if(temp->right) q.push(temp->right);
+            }
+        }
+        return ans;
+    }
+};
+
+#Height of a Binary Tree:
+
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        return max(maxDepth(root->left),maxDepth(root->right))+1;
+    }
+};
+
+#Diameter of Binary Tree:
+
+class Solution {
+public:
+    
+    int height(TreeNode *root) {
+        if(!root) return 0;
+        return max(height(root->left),height(root->right))+1;
+    }
+    
+    int diameterOfBinaryTree(TreeNode* root) {
+        if(!root) return 0;
+        int l=height(root->left), r=height(root->right);
+        return max(l+r,max(diameterOfBinaryTree(root->left),diameterOfBinaryTree(root->right)));
+    }
+};
+
+#Check if the Binary tree is height-balanced or not:
+
+class Solution {
+public:
+    
+    int height(TreeNode *root) {
+        if(!root) return 0;
+        return max(height(root->left),height(root->right))+1;
+    }
+    
+    bool isBalanced(TreeNode* root) {
+        if(!root) return true;
+        int l=height(root->left), r=height(root->right);
+        if(abs(l-r)>1) return false;
+        return isBalanced(root->left)&&isBalanced(root->right);
+    }
+};
+
+#LCA in Binary Tree:
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        if(root==p) return p;
+        if(root==q) return q;
+        
+        TreeNode* l=lowestCommonAncestor(root->left,p,q);
+        TreeNode* r=lowestCommonAncestor(root->right,p,q);
+        
+        if(l&&r) return root;
+        if(l) return l;
+        return r;
+        
+    }
+};
+
+#Check if two trees are identical or not:
+
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if((!p && q) || (p && !q)) return false;
+        if(!p && !q) return true;
+        if(p->val != q->val) return false;
+        return isSameTree(p->left,q->left)&&isSameTree(p->right,q->right);
+        return true;
+    }
+};
+
+#Zig Zag Traversal of Binary Tree:
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        if(!root) return ans;
+        queue<TreeNode*> q;
+        q.push(root);
+        q.push(NULL);
+        int f=1;
+        vector<int> v;
+        while(q.size()) {
+            TreeNode *temp=q.front(); q.pop();
+            if(temp!=NULL) v.push_back(temp->val);
+            if(temp==NULL) {
+                if(f==1) ans.push_back(v);
+                else {
+                    reverse(v.begin(),v.end());
+                    ans.push_back(v);
+                }
+                v.clear();
+                f = f==1? 2 : 1;
+                if(q.size()==0) break;
+                q.push(NULL);
+            } else {
+                if(temp->left) q.push(temp->left);
+                if(temp->right) q.push(temp->right);
+            }
+        }
+        return ans;
+    }
+};
+
+#Boundary Traversal of Binary Tree:
+
+class Solution {
+public:
+
+    bool isLeaf(Node *root) {
+        if(root->left==NULL && root->right==NULL) return true;
+        return false;
+    }
+    
+    void left(Node* root, vector<int> &ans) {
+        if(!root) return;
+        root=root->left;
+        while(root) {
+            if(!isLeaf(root)) ans.push_back(root->data);
+            if(root->left) root=root->left;
+            else root=root->right;
+        }
+    }
+    
+    void right(Node* root, vector<int> &ans) {
+        if(!root) return;
+        root=root->right;
+        vector<int> temp;
+        while(root) {
+            if(!isLeaf(root)) temp.push_back(root->data);
+            if(root->right) root=root->right;
+            else root=root->left;
+        }
+        for(int i=temp.size()-1;i>=0;i--) ans.push_back(temp[i]);
+    }
+    
+    void bottom(Node *root, vector<int> &ans) {
+        if(!root) return;
+        bottom(root->left,ans);
+        if(isLeaf(root)) ans.push_back(root->data);
+        bottom(root->right,ans);
+    }
+
+    vector <int> boundary(Node *root)
+    {
+        //Your code here
+        vector<int> ans;
+        if(!root) return ans;
+        ans.push_back(root->data);
+        if(isLeaf(root)) return ans;
+        left(root,ans);
+        bottom(root,ans);
+        right(root,ans);
+        return ans;
+    }
+};
+
+
+

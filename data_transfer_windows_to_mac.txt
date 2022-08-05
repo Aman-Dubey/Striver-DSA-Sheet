@@ -1,0 +1,9 @@
+connect Windows to Mac::
+1: Windows defender firewall => Allow an app or feature => File and Preinter sharing all check.
+2: Network and Sharing => advance sharing => turn on sharing 
+3: Goto folder => properties=> sharing => full contol check.
+4: ipconfid copy ip.
+
+Goto mac::
+
+Go => connect to server => ip => smb://ip_address => microsoft password.

@@ -1,0 +1,216 @@
+DAY-6::
+
+#Find intersection point of Y LinkedList:
+
+M1::
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *h1=headA, *h2=headB;
+        map<ListNode*,int> mp;
+        while(h1){
+            mp[h1]=1;
+            h1=h1->next;
+        }
+        while(h2){
+            if(mp.find(h2)!=mp.end()) return h2;
+            h2=h2->next;
+        }
+        return NULL;
+    }
+};
+
+M2::
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *d1=headA,*d2=headB;
+        while(d1 || d2) {
+            if(d1==d2) return d1;
+            d1 = d1==NULL ? headB : d1->next;
+            d2 = d2==NULL ? headA : d2->next;
+        }
+        return NULL;
+    }
+};
+
+#Detect a cycle in Linked List:
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode *slow=head, *fast=head;
+        while(slow && fast && fast->next) {
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast) return true;
+        }
+        return false;
+    }
+};
+
+
+#Reverse a LinkedList in groups of size k.:
+
+M1::
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode *curr=head, *prev=NULL, *next=NULL;
+        int t=1;
+        while(curr && t<k) {
+            curr=curr->next;
+            t++;
+        }
+        if(t<=k && curr==NULL) return head;
+        curr=head;
+        t=0;
+        while(curr && t<k) {
+            next=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=next;
+            t++;
+        }
+        
+        if(curr) head->next=reverseKGroup(curr,k);
+        return prev;
+    }
+};
+
+M2::
+class Solution {
+public:
+    
+    ListNode* reverse(ListNode *head, int n, int k) {
+        ListNode *curr=head, *prev=NULL, *next=NULL;
+        int t=k;
+        if(n<=0 || head==NULL) return head;
+        
+        while(curr && t--) {
+            next=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=next;
+        }
+        
+        head->next=reverse(curr,n-1,k);
+        return prev;
+        
+    }
+    
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        int n=0;
+        ListNode *temp=head;
+        while(temp) {
+            temp=temp->next;
+            n++;
+        }
+        n/=k;
+        return reverse(head,n,k);
+        
+        cout<<n;
+        
+        
+        return NULL;
+    }
+};
+
+#Check if a LinkedList is palindrome or not.:
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        ListNode *curr=head,*prev=NULL,*next=NULL;
+        int n=0;
+        while(curr) {
+            curr=curr->next;
+            n++;
+        }
+        int isEven = n%2==0 ? 1 : 0;
+        n=(n+1)/2;
+        curr=head;
+        while(curr && n--) {
+            next=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=next;
+        }
+        if(!isEven) prev=prev->next;
+        
+        while(prev && curr) {
+            if(prev->val!=curr->val) return false;
+            prev=prev->next;
+            curr=curr->next;
+        }
+        
+        return true;
+    }
+};
+
+#Find the starting point of the Loop of LinkedList:
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *slow=head, *fast=head;
+        int ans=0;
+        while(slow && fast && fast->next) {
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast){
+                ans=1;
+                break;
+            }
+        }
+        if(ans==0) return NULL;
+        fast=head;
+        while(fast&&slow) {
+            if(slow==fast) return slow;
+            slow=slow->next;
+            fast=fast->next;
+        }
+        return NULL;
+
+    }
+};
+
+#Flattening of a LinkedList:
+
+Node* merge(Node *root) {
+    if(!root) return NULL;
+    Node *one=root, *two=root->next;
+    Node *res = new Node(0);
+    
+    Node *temp=res;
+    while(one && two) {
+        if(one->data < two->data) {
+            temp->bottom=one;
+            one=one->bottom;
+        } else {
+            temp->bottom=two;
+            two=two->bottom;
+        }
+        temp=temp->bottom;
+    }
+    
+    if(one) temp->bottom=one;
+    if(two) temp->bottom=two;
+    return res->bottom;
+    
+}
+    
+Node *flatten(Node *root)
+{
+   // Your code here
+   if(!root || !root->next) return root;
+   
+   root->next=flatten(root->next);
+   
+   root = merge(root);
+   
+   return root;
+   
+}

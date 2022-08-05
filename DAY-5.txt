@@ -1,0 +1,153 @@
+DAY: 5
+
+#Reverse a LinkedList:
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode *curr=head, *prev=NULL,*nextt=NULL;
+        while(curr) {
+            nextt=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=nextt;
+        }
+        return prev;
+    }
+};
+
+#Find the middle of LinkedList:
+
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        if(!head) return NULL;
+        ListNode *slow=head,*fast=head;
+        while(fast && slow) {
+            if(fast->next==NULL) return slow;
+            if(fast->next->next==NULL) return slow->next;
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        return NULL;
+    }
+};
+
+#Merge two sorted Linked List (use method used in mergeSort):
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *temp1=list1, *temp2=list2,*ans,*temp;
+        if(!temp1) return temp2;
+        if(!temp2) return temp1;
+        if(temp1->val > temp2->val) {
+            ans=temp2;
+            temp=ans;
+            temp2=temp2->next;
+        } else {
+            ans=temp1;
+            temp=ans;
+            temp1=temp1->next;
+        }
+        while(temp1 && temp2) {
+            if(temp1->val < temp2->val) {
+                temp->next=temp1;
+                temp1=temp1->next;
+            } else {
+                temp->next=temp2;
+                temp2=temp2->next;
+            }
+            temp=temp->next;
+        }  
+        if(temp1) temp->next=temp1;
+        if(temp2) temp->next=temp2;
+        return ans;
+    }
+};
+
+#Remove N-th node from back of LinkedList:
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *temp=head, *fast=head;
+        while(n-- && fast) {
+            fast=fast->next;
+        }
+        
+        if(!fast) {
+            head=head->next;
+            return head;
+        }
+        
+        while(fast->next) {
+            fast=fast->next;
+            temp=temp->next;
+        }
+        
+        temp->next=temp->next->next;
+        return head;
+        
+    }
+};
+
+#Add two numbers as LinkedList:
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *h1=l1,*h2=l2,*prev1,*prev2;
+        int carry=0;
+        while(h1 && h2) {
+            int k=carry+h1->val+h2->val;
+            h1->val=k%10;
+            h2->val=k%10;
+            carry=k/10;
+            prev1=h1;
+            prev2=h2;
+            h1=h1->next;
+            h2=h2->next;
+        }
+        
+        ListNode *ans = h1==NULL ? l2 : l1;
+        while(h1) {
+            int k=carry+h1->val;
+            h1->val=k%10;
+            carry=k/10;
+            prev1=h1;
+            h1=h1->next;
+        }
+        
+        while(h2) {
+            int k=carry+h2->val;
+            h2->val=k%10;
+            carry=k/10;
+            prev2=h2;
+            h2=h2->next;
+        }
+        
+        if(carry) {
+            ListNode *temp= new ListNode();
+            temp->val=carry;
+            if(ans==l1) {
+                prev1->next=temp;
+            } else prev2->next=temp;
+        }
+        
+        return ans;
+        
+    }
+};
+
+#Delete a given Node when a node is given.(0(1) solution):
+
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        if(!node) return;
+        if(node->next==NULL) node=NULL;
+        node->val=node->next->val;
+        node->next=node->next->next;
+    }
+};

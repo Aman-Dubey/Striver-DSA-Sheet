@@ -1,0 +1,102 @@
+DAY::19:
+
+#Maximum path sum:
+
+class Solution {
+public:
+    
+    int find(TreeNode *root, int &ans) {
+        if(!root) return 0;
+        int l=max(0,find(root->left,ans));
+        int r=max(0,find(root->right,ans));
+        ans=max(ans,l+r+root->val);
+        return max(l,r)+root->val;      
+    }
+    
+    int maxPathSum(TreeNode* root) {
+        int ans=INT_MIN;
+        find(root,ans);
+        return ans;
+    }
+};
+
+#Construct Binary Tree from inorder and preorder:
+
+class Solution {
+public:
+    TreeNode* create(vector<int>& preorder,int &preStart,int preEnd,vector<int>& inorder,int inStart, int inEnd,map<int,int> &mp) {
+        if(preStart>preEnd || inStart>inEnd) return NULL;
+        int k=mp[preorder[preStart]];
+        TreeNode *temp=new TreeNode(preorder[preStart++]);
+        temp->left=create(preorder,preStart,preEnd,inorder,inStart,k-1,mp);
+        temp->right=create(preorder,preStart,preEnd,inorder,k+1,inEnd,mp);
+        return temp;
+    }
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int k=0;
+        map<int,int> mp;
+        for(int i=0;i<inorder.size();i++) mp[inorder[i]]=i;
+        return create(preorder,k,preorder.size()-1,inorder,0,inorder.size()-1,mp);
+    }
+};
+
+#Construct Binary Tree from inorder and postorder:
+
+class Solution {
+public:
+    
+    TreeNode* ans(vector<int> &inorder,int inStart, int inEnd, vector<int> &postorder, int &postEnd, map<int,int> &mp) {
+        if(inStart > inEnd || postEnd < 0) return NULL;
+        int k=mp[postorder[postEnd]];
+        TreeNode *temp=new TreeNode(postorder[postEnd--]);
+        temp->right=ans(inorder,k+1,inEnd,postorder,postEnd,mp);
+        temp->left=ans(inorder,inStart,k-1,postorder,postEnd,mp);
+        
+        return temp;
+    }
+    
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        map<int,int> mp;
+        int n=inorder.size(),k=n-1;
+        for(int i=0;i<n;i++) mp[inorder[i]]=i;
+        return ans(inorder,0,n-1,postorder,k,mp);
+    }
+};
+
+#Symmetric Binary Tree:
+
+class Solution {
+public:
+    bool check(TreeNode *a, TreeNode *b) {
+        if(!a && !b) return true;
+        if((!a && b) || (a && !b)) return false;
+        if(a->val!=b->val) return false;
+        return check(a->left,b->right)&&check(a->right,b->left);
+        return true;
+    }
+    
+    bool isSymmetric(TreeNode* root) {
+        if(!root) return true;
+        if(!root->left && !root->right) return true;
+        return check(root->left,root->right);
+    }
+};
+
+#Flatten Binary Tree to LinkedList:
+
+#Check if Binary Tree is the mirror of itself or not:
+
+class Solution {
+  public:
+    void mirror(Node* root) {
+        if(!root) return;
+        if(!root->left && !root->right) return ;
+        swap(root->left,root->right);
+        if(root->left) mirror(root->left);
+        if(root->right) mirror(root->right);
+        
+    }
+};
+
+#Check for Children Sum Property

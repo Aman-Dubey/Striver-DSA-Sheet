@@ -1,0 +1,186 @@
+DAY 13::
+
+#Implement Stack Using Arrays:
+
+question was different in link :P
+
+vector<int> maxXorQueries(vector<int> &arr, vector<vector<int>> &q){
+	//	Write your coode here.
+    int n=q.size();
+    vector<int> ans;
+    for(int i=0;i<n;i++) ans.push_back(0);
+    for(int i=0;i<arr.size();i++) {
+        for(int j=0;j<n;j++) {
+            if(arr[i]<=q[j][1]) {
+                ans[j]=max(ans[j],q[j][0]^arr[i]);
+            }
+        }
+    }
+    for(int i=0;i<n;i++) if(ans[i]==0) ans[i]=-1;
+    return ans;
+}
+
+#Implement Queue Using Arrays:
+
+Done
+
+#Implement Stack using Queue (using single queue):
+
+class MyStack {
+public:
+    MyStack() {
+        
+    }
+    queue<int> q;
+    void push(int x) {
+        int k=q.size();
+        q.push(x);
+        for(int i=0;i<k;i++) {
+            q.push(q.front());
+            q.pop();
+        }
+    }
+    
+    int pop() {
+        if(q.size()==0) return -1;
+        int k=q.front();
+        q.pop();
+        return k;
+    }
+    
+    int top() {
+        if(q.size()==0) return -1;
+        return q.front();
+    }
+    
+    bool empty() {
+        return q.size()==0;
+    }
+};
+
+
+#Implement Queue using Stack (0(1) amortized method):
+
+class MyQueue {
+public:
+    MyQueue() {
+        
+    }
+    stack<int> s;
+    void push(int x) {
+        stack<int> temp;
+        while(s.size()) {
+            temp.push(s.top());
+            s.pop();
+        }
+        temp.push(x);
+        while(temp.size()) {
+            s.push(temp.top());
+            temp.pop();
+        }
+    }
+    
+    int pop() {
+        int k=s.size();
+        if(k<1) return -1;
+        int x=s.top();
+        s.pop();
+        return x;
+    }
+    
+    int peek() {
+        int k=s.size();
+        if(k<1) return -1;
+        return s.top();
+    }
+    
+    bool empty() {
+        return s.size()==0;
+    }
+};
+
+#Check for balanced parentheses:
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        for(int i=0;i<s.size();i++) {
+            if(s[i]=='(' || s[i]=='{' || s[i]=='[') {
+                st.push(s[i]);
+                continue;
+            }
+            if(s[i]==')') {
+                if(st.size()==0 || st.top()!='(') return false;
+                else st.pop();
+            } else if(s[i]=='}') {
+                if(st.size()==0 || st.top()!='{') return false;
+                else st.pop();
+            } else if(s[i]==']') {
+                if(st.size()==0 || st.top()!='[') return false;
+                else st.pop();
+            }
+        }
+        if(st.size()==0) return true;
+        return false;
+    }
+};
+
+#Next Greater Element:
+
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        int n2=nums2.size(), n1=nums1.size();
+        int A[n2];
+        memset(A,-1,sizeof(A));
+        stack<int> s;
+        for(int i=0;i<n2;i++) {
+            while(s.size() && nums2[s.top()]<=nums2[i]) {
+                int k=s.top(); s.pop();
+                A[k]=nums2[i];
+            }
+            s.push(i);
+        }
+        vector<int> ans;
+        for(int i=0;i<n1;i++) {
+            for(int j=0;j<n2;j++) {
+                if(nums2[j]==nums1[i]) {
+                    ans.push_back(A[j]);
+                }
+            }
+        }
+        return ans;
+        for(int i=0;i<n2;i++) cout<<A[i]<<" ";
+        return {};
+        
+    }
+};
+
+#Sort a Stack:
+
+void joint(int k, stack<int> &s) {
+    if(s.size()==0) {
+        s.push(k);
+    } else {
+        if(s.top()<=k) s.push(k);
+        else {
+            int t=s.top();
+            s.pop();
+            joint(k,s);
+            s.push(t);
+        }
+    }
+    return;
+}
+
+void sortStack(stack<int> &s)
+{
+	// Write your code here
+    if(s.size()==0) return;
+    int k=s.top();
+    s.pop();
+    sortStack(s);
+    joint(k,s);
+}
+

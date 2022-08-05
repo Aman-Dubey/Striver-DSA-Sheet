@@ -1,0 +1,216 @@
+DAY::20:
+
+#Populate Next Right pointers of Tree:
+
+
+M1::
+class Solution {
+public:
+    
+    void ans(Node *root) {
+        if(!root) return ;
+        if(root->left) {
+            if(root->right) {
+                root->left->next=root->right;
+            } else if(root->next) {
+                if(root->next->left) {
+                    root->left->next=root->next->left;
+                } else if(root->next->right) {
+                    root->left->next=root->next->right;
+                } else {
+                    root->left->next=NULL;
+                }
+            }
+        }
+        if(root->right) {
+            if(root->next) {
+                if(root->next->left) {
+                    root->right->next=root->next->left;
+                } else if(root->next->right) {
+                    root->right->next=root->next->right;
+                } else {
+                    root->right->next=NULL;
+                }}
+            }
+        ans(root->left);
+        ans(root->right);
+    }
+    
+    Node* connect(Node* root) {
+        Node *temp=root;
+        ans(root);
+        return temp;
+    }
+};
+
+M2::
+class Solution {
+public:
+    Node* connect(Node* root) {
+        Node *temp=root;
+        if(!temp) return temp;
+        queue<Node*> q;
+        q.push(temp);
+        q.push(NULL);
+        while(q.size()) {
+            Node *t=q.front(); q.pop();
+            if(t==NULL) {
+                if(q.size()==0) break;
+                q.push(NULL);
+            } else {
+                t->next=q.size()==0 ? NULL : q.front();
+                if(t->left) q.push(t->left);
+                if(t->right) q.push(t->right);
+            }
+        }
+        return root;
+    }
+};
+
+M::
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        if(root->left) root->left->next=root->right;
+        if(root->right) root->right->next=root->next ? root->next->left : NULL;
+        connect(root->left);
+        connect(root->right);
+        return root;
+    }
+};
+
+#Search given Key in BST:
+
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(!root) return root;
+        if(root->val==val) return root;
+        if(root->val > val) return searchBST(root->left,val);
+        else return  searchBST(root->right,val);
+    }
+};
+
+#Construct BST from given keys:
+
+class Solution {
+public:
+    TreeNode *ans(vector<int> &nums, int start, int end) {
+        if(start>end) return NULL;
+        int mid=(start+end)/2;
+        TreeNode *tree=new TreeNode(nums[mid]);
+        tree->left = ans(nums,start,mid-1);
+        tree->right=ans(nums,mid+1,end);
+        return tree;
+    }
+    
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return ans(nums,0,nums.size()-1);
+    }
+};
+
+#Construct BST from preorder traversal:
+
+class Solution {
+public:
+    TreeNode* ans(vector<int>& preorder, int &preStart, int preEnd, vector<int>& inorder, int inStart, int inEnd, map<int,int> &mp) {
+        if(preStart > preEnd || inStart > inEnd) return NULL;
+        int k=mp[preorder[preStart]];
+        TreeNode *temp = new TreeNode(preorder[preStart++]);
+        temp->left=ans(preorder,preStart,preEnd,inorder,inStart,k-1,mp);
+        temp->right=ans(preorder,preStart,preEnd,inorder,k+1,inEnd,mp);
+        return temp;
+    }
+    
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        vector<int> inorder=preorder;
+        sort(inorder.begin(),inorder.end());
+        map<int,int> mp;
+        int n=preorder.size(),k=0;
+        for(int i=0;i<n;i++) mp[inorder[i]]=i;
+        return ans(preorder,k,n-1,inorder,0,n-1,mp);
+    }
+};
+
+#Check is a BT is BST or not:
+
+M1::
+class Solution {
+public:
+    bool ans(TreeNode* root, double maxi, double mini) {
+        if(!root) return true;
+        if(root->val > mini && root->val < maxi) {
+            if(ans(root->left,root->val,mini)&&ans(root->right,maxi,root->val))
+                return true;
+            return false;
+        }
+        return false;
+    }
+    
+    bool isValidBST(TreeNode* root) {
+        return ans(root,DBL_MAX,-DBL_MAX);
+    }
+};
+
+M2::
+class Solution {
+public:
+    bool ans(TreeNode *root, double maxi, double mini) {
+        if(!root) return true;
+        if(root->val > mini && root->val<maxi && ans(root->left,root->val,mini) && ans(root->right,maxi,root->val)) return true;
+        return false;
+    }
+    
+    bool isValidBST(TreeNode* root) {
+        return ans(root,DBL_MAX,-DBL_MAX);
+    }
+};
+
+#Find LCA of two nodes in BST:
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        if(root==p) return root;
+        if(root==q) return root;
+        TreeNode *l=lowestCommonAncestor(root->left,p,q),*r=lowestCommonAncestor(root->right,p,q);
+        if(l&&r) return root;
+        return l?l:r;
+    }
+};
+
+#Find the inorder predecessor/successor of a given Key in BST:
+
+void findPreSuc(Node* root, Node*& pre, Node*& suc, int key)
+{
+
+// Your code goes here
+    if(!root) return;
+    if(root->key==key) {
+        if(root->left) {
+            Node *temp=root->left;
+            while(temp->right){
+                temp=temp->right;
+            }
+            pre=temp;
+        }
+        
+        if(root->right) {
+            Node *temp=root->right;
+            while(temp->left){
+                temp=temp->left;
+            }
+            suc=temp;
+        }
+        return;
+    } else if(root->key > key) {
+        suc=root;  // this is for if key is not found in tree.
+        return findPreSuc(root->left,pre,suc,key);
+    } else {
+        pre=root;  // this is for if key is not found in tree.
+        return findPreSuc(root->right,pre,suc,key);
+    }
+}
+

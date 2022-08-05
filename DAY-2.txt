@@ -1,0 +1,136 @@
+DAY 2::
+
+#Rotate Matrix:
+Transpose => reverse
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        for(int i=0;i<n;i++) {
+            for(int j=i;j<n;j++) swap(matrix[i][j],matrix[j][i]);
+        }
+        for(int i=0;i<n;i++) reverse(matrix[i].begin(),matrix[i].end());
+    }
+};
+
+#Merge Overlapping Subintervals:
+
+
+#Merge two sorted Arrays without extra space:
+
+
+#Find the duplicate in an array of N+1 integers.:
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int n=nums.size();
+        for(int i=0;i<n;i++) {
+            if(nums[abs(nums[i])]<0) return abs(nums[i]);
+            nums[abs(nums[i])]*=-1;
+        }
+        return -1;
+    }
+};
+
+#Repeat and Missing Number:
+
+M1::
+vector<int> Solution::repeatedNumber(const vector<int> &A) {
+int n=A.size();
+
+long long int expectedSum=n*(n+1)/2, originalSum=0;
+long long int expectedSqSum=n*(n+1)*(2*n +1)/6, originalSqSum=0;
+for(int i=0;i<n;i++) {
+    originalSqSum+=(A[i]*A[i]);
+    originalSum+=A[i];
+}
+
+long long int XminusY=expectedSum-originalSum,XplusY=(expectedSqSum-originalSqSum)/XminusY;
+long long int k=(XminusY+XplusY)/2;
+return {XplusY-k,k};
+
+}
+
+M2::
+vector<int> Solution::repeatedNumber(const vector<int> &A) {
+int n=A.size();
+
+int XxorY=0;
+for(int i=0;i<n;i++) XxorY^=(i+1);
+for(int i=0;i<n;i++) XxorY^=A[i];
+int setBitNumber = XxorY & ~(XxorY-1);
+int x=0,y=0;
+for(int i=0;i<n;i++) {
+    if(setBitNumber & A[i]) x^=A[i];
+    else y^=A[i];
+}
+for(int i=1;i<=n;i++) {
+    if(setBitNumber & i) x^=i;
+    else y^=i;
+}
+
+for(int i=0;i<n;i++) {
+    if(x==A[i]) return {x,y};
+}
+return {y,x};
+
+}
+
+
+#Inversion of Array (Pre-req: Merge Sort)
+
+long long kk=0;
+
+void merge(long long *A, int s, int m, int e) {
+    int l=m-s+1,r=e-m;
+    int L[l],R[r],k=0;
+    for(int i=s;i<=m;i++){
+        L[k]=A[i]; k++;
+    }
+    k=0;
+    for(int i=m+1;i<=e;i++) {
+        R[k]=A[i]; k++;
+    }
+    
+    int x=0, y=0, t=s;
+    while(x<l && y<r) {
+        if(L[x]<=R[y]) {
+            A[t]=L[x];
+            x++;
+        } else {
+            A[t]=R[y];
+            kk+=l-x;
+            y++;
+        }
+        t++;
+    }
+    while(x<l) {
+        A[t]=L[x];
+        x++;
+        t++;
+    }
+    while(y<r) {
+        A[t]=R[y];
+        y++;
+        t++;
+    }
+    return;
+}
+
+void mergesort(long long *A , int s, int e) {
+    if(s<e) {
+        int mid=(s+e)/2;
+        //cout<<mid<<" ";
+        mergesort(A,s,mid);
+        mergesort(A,mid+1,e);
+        merge(A,s,mid,e);
+    }
+    return;
+}
+long long getInversions(long long *arr, int n){
+    kk=0;
+    mergesort(arr,0,n-1);
+    return kk;
+    
+}

@@ -1,0 +1,124 @@
+DAY::21:
+
+#Floor in a BST:
+
+int floorInBST(TreeNode<int> * root, int X)
+{
+    if(!root) return -1;  
+    int ans=INT_MIN;
+    while(root) {
+        if(root->val==X) return X;
+        if(root->val > X) root=root->left;
+        else {
+            ans=max(ans,root->val);
+            root=root->right;
+        }
+    }
+    return ans;
+}
+
+#Ceil in a BST:
+
+int findCeil(BinaryTreeNode<int> *root, int X){
+    // Write your code here.
+    if(!root) return -1;
+    int ans=INT_MAX;
+    while(root) {
+        if(root->data==X) return X;
+        if(root->data > X) {
+            ans=min(ans,root->data);
+            root=root->left;
+        } else {
+            root=root->right;
+        }
+    }
+    return ans==INT_MAX?-1:ans;
+}
+
+#Find K-th smallest element in BST:
+
+class Solution {
+public:
+    void find(TreeNode* root, int &s, int &ans, int k) {
+        if(!root) return;
+        find(root->left,s,ans,k);
+        s++;
+        if(s==k) {
+            ans=root->val;
+            return;
+        }
+        find(root->right,s,ans,k);
+    }
+    
+    int kthSmallest(TreeNode* root, int k) {
+        int ans=-1,s=0;
+        find(root,s,ans,k);
+        return ans;
+    }
+};
+
+#Find K-th largest element in BST:
+
+class Solution
+{
+    public:
+    void find(Node* root, int &s, int &ans, int k) {
+        if(!root) return;
+        find(root->right,s,ans,k);
+        s++;
+        if(s==k) {
+            ans=root->data;
+            return;
+        }
+        find(root->left,s,ans,k);
+    }
+    int kthLargest(Node *root, int K)
+    {
+        int ans=-1,s=0;
+        find(root,s,ans,K);
+        return ans;
+    }
+};
+
+#Find a pair with a given sum in BST:
+
+#BST iterator:
+
+M1::
+class BSTIterator {
+    public:
+    vector<int> v;
+    int curr=0,n=-1;
+    void inorder(TreeNode *root) {
+        if(!root) return;
+        inorder(root->left);
+        v.push_back(root->val);
+        inorder(root->right);
+    }
+
+    BSTIterator(TreeNode* root) {
+        inorder(root);
+    }
+    
+    int next() {
+        if(n==-1) n=v.size()-1;
+        if(hasNext()) {
+            return v[curr++];
+        }
+        return -1;
+    }
+    
+    bool hasNext() {
+        if(n==-1) n=v.size()-1;
+        if(curr<=n) return true;
+        return false;
+    }
+};
+
+M2::
+
+
+#Size of the largest BST in a Binary Tree:
+
+#Serialize and deserialize Binary Tree:
+

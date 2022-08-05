@@ -1,0 +1,187 @@
+DAY-14::
+
+#Next Smaller Element:
+
+vector<int> Solution::prevSmaller(vector<int> &A) {
+    vector<int> ans(A.size(),-1);
+    stack<int> s;
+    for(int i=0;i<A.size();i++) {
+        while(s.size() && s.top()>=A[i]) s.pop();
+        if(s.size()) ans[i]=s.top();
+        s.push(A[i]);
+    }
+    return ans;
+}
+
+#LRU cache (IMPORTANT):
+
+class LRUCache {
+public:
+    
+    class Node {
+        public: 
+        int value, key;
+        Node *next=NULL;
+        Node *prev=NULL;
+        Node(int val, int k) {
+            value=val;
+            key=k;
+        }
+    };
+    
+    map<int, Node*> mp;
+    int maxSize = 0,currSize=0;
+    Node *head=NULL, *tail=NULL;
+    
+    LRUCache(int capacity) {
+        maxSize = capacity;
+    }
+    
+    void deleteNode(Node *node) {
+        if(node==NULL) return;
+        Node *temp=node;
+        currSize--;
+        mp.erase(node->key);
+        if(head==tail && head==node) {
+            head=NULL; tail=NULL; return;
+        }
+        
+        if(node==head) {
+            
+            head->next->prev=NULL;
+            head=head->next;
+            return;
+        } 
+        if(node==tail) {
+            tail->prev->next=NULL;
+            tail=tail->prev;
+            return;
+        }
+        node->prev->next=node->next;
+        node->next->prev=node->prev;
+        return;
+    }
+    
+    int get(int key) {
+        if(mp.find(key)==mp.end()) return -1;
+        Node *temp=mp[key];
+        deleteNode(mp[key]);
+        currSize++;
+        mp[key]=temp;
+        if(head==NULL) {
+            head=temp;
+            tail=temp;
+        } else {
+            temp->next=head;
+            head->prev=temp;
+            head=temp;
+        }
+        return temp->value;
+    }
+    
+    void put(int key, int value) {
+        if(mp.find(key)==mp.end()) {
+            if(currSize==maxSize) {
+                deleteNode(tail);
+                Node *temp=new Node(key,value);
+                temp->next=head;
+                head->prev=temp;
+                head=temp;
+                mp[key]=temp;
+            } else {
+                Node *temp=new Node(key,value);
+                if(head==NULL) {
+                    head=temp;
+                    tail=temp;
+                } else {
+                    temp->next=head;
+                    head->prev=temp;
+                    head=temp;
+                }
+                mp[key]=temp;
+            }
+            currSize++;
+        } else {
+            Node *temp=mp[key];
+            deleteNode(temp);
+            temp->next=head;
+            head->prev=temp;
+            head=temp;
+        }
+    }
+};
+
+
+#LFU Cache:
+
+Done
+
+#Largest rectangle in a histogram:
+
+M1::
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& h) {
+        int n=h.size();
+        int R[n],L[n];
+        stack<int> s;
+        for(int i=0;i<n;i++) {
+            R[i]=n-1;
+            L[i]=0;
+        }
+        
+        for(int i=0;i<n;i++) {
+            while(s.size() && h[i]<h[s.top()]){
+                R[s.top()]=i-1;
+                s.pop();
+            }
+            s.push(i);
+        }
+        while(s.size()) s.pop();
+        for(int i=n-1;i>=0;i--) {
+            while(s.size() && h[i]<h[s.top()]){
+                L[s.top()]=i+1;
+                s.pop();
+            }
+            s.push(i);
+        }
+        int ans=0;
+        for(int i=0;i<n;i++) {
+            ans=max(ans,(R[i]-L[i]+1)*h[i]);
+        }
+        return ans;
+    }
+};
+
+#Sliding Window maximum:
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> ans;
+        deque<int> d;
+        int n=nums.size();
+        if(n<k) return ans;
+        for(int i=0;i<n;i++) {
+            while(d.size() && i-k==d.front()) d.pop_front();
+            while(d.size() && nums[d.back()]<=nums[i]) d.pop_back();
+            d.push_back(i);
+            if(i>=k-1) {
+                ans.push_back(nums[d.front()]);
+            }
+        }
+        return ans;
+    }
+};
+
+#Implement Min Stack:
+
+#Rotten Orange (Using BFS):
+
+#Stock Span Problem:
+
+#Find the maximum of minimums of every window size:
+
+#The Celebrity Problem:
+
+

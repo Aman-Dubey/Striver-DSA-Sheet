@@ -1,0 +1,286 @@
+DAY-17::
+
+#Inorder Traversal:
+
+class Solution {
+public:
+    
+    void inorder(vector<int> &ans, TreeNode *root) {
+        if(!root) return;
+        inorder(ans,root->left);
+        ans.push_back(root->val);
+        inorder(ans,root->right);
+    }
+    
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        inorder(ans,root);
+        return ans;
+    }
+};
+
+#Preorder Traversal:
+
+class Solution {
+public:
+    
+    void inorder(vector<int> &ans, TreeNode *root) {
+        if(!root) return;
+        ans.push_back(root->val);
+        inorder(ans,root->left);
+        
+        inorder(ans,root->right);
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        inorder(ans,root);
+        return ans;
+    }
+};
+
+#Postorder Traversal:
+
+class Solution {
+public:
+    
+    void inorder(vector<int> &ans, TreeNode *root) {
+        if(!root) return;
+        
+        inorder(ans,root->left);
+        
+        inorder(ans,root->right);
+        ans.push_back(root->val);
+    }
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        inorder(ans,root);
+        return ans;
+    }
+};
+
+#Morris Inorder Traversal:
+
+
+#Morris Preorder Traversal:
+
+
+#LeftView Of Binary Tree:
+
+M1::
+vector<int> leftView(Node *root)
+{
+   // Your code here
+   queue<Node*> q;
+   vector<int> ans;
+   if(!root) return ans;
+   q.push(root);
+   ans.push_back(root->data);
+   q.push(NULL);
+   while(q.size()) {
+       Node *temp = q.front(); q.pop();
+       
+       if(temp==NULL) {
+           if(q.size() && q.front()!=NULL){
+               ans.push_back(q.front()->data);
+               q.push(NULL);
+           }
+           else break;
+           continue;
+           
+       }
+       
+       if(temp->left) q.push(temp->left);
+       if(temp->right) q.push(temp->right);
+   } 
+   return ans;
+}
+
+M2::
+void left(Node *root, vector<int> &ans, int level) {
+    if(!root) return;
+    if(ans.size()==level) {
+        ans.push_back(root->data);
+    }
+    left(root->left,ans,level+1);
+    left(root->right,ans,level+1);
+}
+
+vector<int> leftView(Node *root)
+{
+   // Your code here
+   vector<int> ans;
+   left(root,ans,0);
+   return ans;
+}
+
+
+#Bottom View of Binary Tree:
+
+class Solution {
+  public:
+  
+  void inorder(Node *root,map<Node *,int> &mp, int sum, int &small, int &large) {
+      if(!root) return;
+      inorder(root->left, mp, sum-1,small,large);
+      mp[root]=sum;
+      small=min(small,sum);
+      large=max(large,sum);
+      inorder(root->right, mp, sum+1,small,large);
+  }
+  
+    vector <int> bottomView(Node *root) {
+        // Your Code Here
+        map<Node*,int> mp;
+        int small=INT_MAX, large=INT_MIN;
+        inorder(root,mp,0,small,large);
+        //cout<<small<<" "<<large;
+        vector<int> ans(large-small+1,0);
+        queue<Node*> q;
+        q.push(root);
+        while(q.size()) {
+            Node *temp=q.front(); q.pop();
+            ans[mp[temp]+abs(small)]=temp->data;
+            if(temp->left) q.push(temp->left);
+            if(temp->right) q.push(temp->right);
+        }
+        return ans;
+    }
+};
+
+
+#Top View of Binary Tree:
+
+class Solution
+{
+    public:
+    //Function to return a list of nodes visible from the top view 
+    //from left to right in Binary Tree.
+    
+    void find(int &small, int &large, Node *root, int sum, map<Node*,int> &mp) {
+        if(!root) return;
+        find(small,large,root->left,sum-1,mp);
+        mp[root]=sum;
+        small=min(small,sum);
+        large=max(large,sum);
+        
+        find(small,large ,root->right,sum+1,mp);
+    }
+    
+    vector<int> topView(Node *root)
+    {
+        //Your code here
+        if(!root) return {};
+        int small=INT_MAX,large=INT_MIN;
+        map<Node*,int> mp;
+        find(small,large,root,0,mp);
+        vector<int> ans(large-small+1,INT_MIN);
+        queue<Node*> q;
+        q.push(root);
+        while(q.size()) {
+            Node *temp=q.front(); q.pop();
+            if(ans[mp[temp]+abs(small)]==INT_MIN) {
+            ans[mp[temp]+abs(small)]=temp->data;
+            }
+            if(temp->left) q.push(temp->left);
+            if(temp->right) q.push(temp->right);
+        }
+        return ans;
+    }
+
+};
+
+
+
+#Preorder inorder postorder in a single traversal:
+
+void find(vector<int> &inorder, vector<int> &preorder, vector<int> &postorder, BinaryTreeNode<int> *root) {
+    if(!root) return;
+    preorder.push_back(root->data);
+    find(inorder,preorder,postorder,root->left);
+    inorder.push_back(root->data);
+    find(inorder,preorder,postorder,root->right);
+    postorder.push_back(root->data);
+}
+
+vector<vector<int>> getTreeTraversal(BinaryTreeNode<int> *root){
+    // Write your code here.
+    vector<vector<int>> ans;
+    if(!root) return ans;
+    vector<int> inorder, preorder, postorder;
+    find(inorder,preorder,postorder,root);
+    ans.push_back(inorder);
+    ans.push_back(preorder);
+    ans.push_back(postorder);
+    return ans;
+}
+
+#Vertical order traversal:
+
+class Solution {
+public:
+    
+    void find(map<TreeNode*,int> &mp, int &small, int &large, TreeNode *root,int sum) {
+        if(!root) return;
+        find(mp,small,large,root->left,sum-1);
+        
+        mp[root]=sum;
+        small=min(small,sum);
+        large=max(large,sum);
+        
+        find(mp,small,large,root->right,sum+1);
+    }
+    
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        
+        
+        if(!root) return  {};
+        map<TreeNode*,int> mp;
+
+        int small=INT_MAX,large=INT_MIN;
+        find(mp,small,large,root,0);
+        
+        vector<vector<int>> ans(large-small+1,vector<int>());
+        queue<TreeNode*> q;
+        q.push(root);
+        while(q.size()) {
+            TreeNode *temp=q.front(); q.pop();
+            ans[mp[temp]+abs(small)].push_back(temp->val);
+            if(temp->left) q.push(temp->left);
+            if(temp->right) q.push(temp->right);
+        }
+        for(int i=0;i<ans.size();i++) sort(ans[i].begin(),ans[i].end());
+        return ans;
+        
+    }
+};
+
+
+#Root to node path in a Binary Tree:
+
+void inorder(vector<int> &ans, vector<int> &temp, TreeNode *A, int B) {
+    if(!A) return ;
+    temp.push_back(A->val);
+    if(A->val==B) {
+        ans=temp;
+        return;
+    } 
+    inorder(ans,temp,A->left,B);
+    inorder(ans,temp,A->right,B);
+    temp.pop_back();
+}
+ 
+vector<int> Solution::solve(TreeNode* A, int B) {
+    vector<int> ans,temp;
+    inorder(ans,temp, A, B);
+    return ans;
+}
+
+
+
+#Max width of a Binary Tree
+
+
+
+
+
+

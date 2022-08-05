@@ -1,0 +1,200 @@
+DAY-15::
+
+#Reverse Words in a String:
+
+M1::
+class Solution {
+public:
+    string reverseWords(string s) {
+        stack<string> st;
+        string temp;
+        for(int i=0;i<s.size();i++) {
+            if(s[i]==' ') {
+                if(temp.size())st.push(temp);
+                temp="";
+            } else if(s[i]!=' ') {
+                temp+=s[i];
+            }
+        }
+        if(temp.size()) st.push(temp);
+        s="";
+        while(st.size()) {
+            
+            s+=st.top(); st.pop();
+            if(st.size()) s+= ' ';
+            
+        }
+        return s;
+    }
+};
+
+M2::
+class Solution {
+public:
+    string reverseWords(string s) {
+        string ans,temp;
+        for(int i=0;i<s.size();i++) {
+            if(s[i]!=' '){
+                temp+=s[i];
+            } else if(s[i]==' ') {
+                if(ans.size()==0 && temp!="") {
+                    ans=temp;
+                } else {
+                    if(temp!= "")
+                    ans = temp + ' ' + ans;
+                }
+                temp="";
+            }
+        }
+        if(temp.size()) {
+            if(ans.size()==0) {
+                    ans=temp;
+                } else {
+                    ans = temp + ' ' + ans;
+                }
+        }
+        return ans;
+    }
+};
+
+#Longest Palindrome in a string:
+
+class Solution {
+public:
+    string longestPalindrome(string a) {
+        string s;
+        int n=a.size();
+        for(int i=0;i<n;i++) {
+            s+=a[i];
+            if(i!=n-1) s+="|"; 
+        }
+        int start=0,end=0,diff=INT_MIN;
+        n=s.size();
+        for(int i=0;i<n;i++) {
+            int j=s[i]=='|'?1:2,t=0;
+                while(i-j>=0 && i+j<n && s[i-j]==s[i+j]) {
+                    j+=2;
+                    t=1;
+                }
+                if(t && diff < (2*j)) {
+                    if(i-j>=0 && i+j<n && s[i-j]==s[i+j]) {
+                        start=i-j;
+                        end=i+j;
+                    } else {
+                        start=i-j+2;
+                        end=i+j-2;
+                    }   
+                    diff=2*j;
+                }
+        }
+        
+        string ans;
+        for(int i=start;i<=end;i++) if(s[i]!='|') ans+=s[i];
+        return ans;
+    }
+};
+
+#Roman Number to Integer and vice versa:
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        map<string, int> mp;
+        mp["M"]=1000;
+        mp["CM"]=900;
+        mp["D"]=500;
+        mp["CD"]=400;
+        mp["C"]=100;
+        mp["XC"]=90;
+        mp["L"]=50;
+        mp["XL"]=40;
+        mp["X"]=10;
+        mp["IX"]=9;
+        mp["V"]=5;
+        mp["IV"]=4;
+        mp["I"]=1;
+        
+        int n=s.size();
+        int ans=0;
+        
+        for(int i=0;i<n;i++) {
+            if(i+1<n && mp.find(s.substr(i,2))!=mp.end()) {
+                ans+=mp[s.substr(i,2)];
+                i++;
+            } else if(mp.find(s.substr(i,1))!=mp.end()) {
+                ans+=mp[s.substr(i,1)];
+            }
+        }
+        return ans;
+    }
+};
+
+#Implement ATOI/STRSTR:
+
+class Solution {
+public:
+    int myAtoi(string s) {
+        int i=0,n=s.size();
+        while(i<n && (s[i]==' ')) i++;
+        int sign = 1;
+        if(s[i]=='+') {
+            sign=1;
+            i++;
+        } else if(s[i]=='-'){
+            sign =-1;
+            i++;
+        }
+        long long int res=0;
+        for(i;i<n;i++) {
+            if(s[i]>='0' && s[i]<='9') {
+                res*=10;
+                res+=s[i]-'0';
+                if(res>INT_MAX) return sign>0 ? INT_MAX : INT_MIN;
+                
+            } else {
+                if(res!=0) return res*sign;
+                return 0;
+            }
+            
+        }
+        int ans=res;
+        return ans*sign;
+    }
+};
+
+#Longest Common Prefix:
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        string s=strs[0];
+        
+        for(int i=1;i<strs.size();i++) {
+            int j=0,n=s.size();
+            for(j=0;j<strs[i].size();j++) {
+                if(j<n && s[j]!=strs[i][j]) break;
+            } 
+            s = s.substr(0,j);
+        }
+        return s;
+    }
+};
+
+#Rabin Karp:
+
+class Solution {
+public:
+    int repeatedStringMatch(string a, string b) {
+        int A=a.size(), B=b.size(), count=0;
+        string s;
+        while(s.size()<B) {
+            s+=a;
+            count++;
+        }
+        if(s.find(b)!=string::npos) return count;
+        s+=a;
+        if(s.find(b)!=string::npos) return count+1;
+        return -1;
+        
+    }
+};
