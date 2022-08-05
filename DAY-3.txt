@@ -138,3 +138,62 @@ public:
 };
 
 #Reverse Pairs (Leetcode)
+
+class Solution {
+public:
+    int result=0;
+    void mergeSort(vector<int>& nums, int start,int mid, int end, int &ans) {
+        int l=mid-start+1, e=end-mid;
+        int A[l], B[e],k=start;
+        for(int i=0;i<l;i++) A[i]=nums[k++];
+        for(int i=0;i<e;i++) B[i]=nums[k++];
+        
+        int x=0, y=0;
+        k=start;
+        int temp=0;
+        for(int i=0;i<l;i++) {
+            while(temp<e && A[i]> 2LL *B[temp]) {
+                result+= (l-i);
+                temp++;
+            }
+        }
+        while(x<l && y<e) {
+            if(A[x]<B[y]){
+                nums[k]=A[x];
+                x++;
+            } else {
+                nums[k]=B[y];
+                y++;
+            }
+            k++;
+        }
+        
+        while(x<l) {
+            nums[k]=A[x];
+            x++;
+            k++;
+        }
+        
+        while(y<e) {
+            nums[k]=B[y];
+            y++;
+            k++;
+        }
+    }
+    
+    void merge(vector<int>& nums, int start, int end, int &ans) {
+        if(start<end) {
+            int mid = (start+end)/2;
+            merge(nums,start,mid,ans);
+            merge(nums,mid+1,end,ans);
+            mergeSort(nums,start,mid,end,ans);
+        }
+    }
+    
+    int reversePairs(vector<int>& nums) {
+        int ans=0, n=nums.size();
+        result=0;
+        merge(nums,0,n-1,ans);
+        return result;
+    }
+};
