@@ -103,6 +103,22 @@ int LongestSubsetWithZeroSum(vector < int > arr) {
 
 #Count number of subarrays with given Xor K
 
+#include <bits/stdc++.h> 
+#include <bits/stdc++.h> 
+int subarraysXor(vector<int> &arr, int x)
+{
+    //    Write your code here.
+    int n=arr.size(),xorr=0,ans=0;
+    map<int,int> mp;
+    for(int i=0;i<n;i++) {
+        xorr^=arr[i];
+        if(xorr==x) ans++;
+        if(mp.find(xorr^x)!=mp.end()) ans+=mp[xorr^x];
+        mp[xorr]++;
+    }
+    return ans;
+}
+
 #Longest Substring without repeat
 
 class Solution {
