@@ -103,6 +103,7 @@ public:
 
 ##Sort an array of 0’s 1’s 2’s:
 
+M1::
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
@@ -123,7 +124,27 @@ public:
         for(int i=0;i<A[2];i++) nums[s+i]=2;
     }
 };
-
+M2:
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int n=nums.size();
+        int s=0, m=0, h=n-1;
+        while(m<=h) {
+            if(nums[m]==0) {
+                swap(nums[s],nums[m]);
+                s++; m++;
+            } else if (nums[m]==1) {
+                swap(nums[s],nums[m]);
+                m++;
+            } else {
+                while(m<h && nums[h]==2) h--;
+                swap(nums[m],nums[h]);
+                h--;
+            }
+        }
+    }
+};
 
 ##Stock buy and Sell:
 
