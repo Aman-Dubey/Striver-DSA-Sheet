@@ -55,11 +55,6 @@ int calculateMinPatforms(int at[], int dt[], int n) {
             b++;
         }
     }
-    while(a<n) {
-        t++;
-        ans=max(ans,t);
-        a++;
-    }
     return ans;
 }
 
